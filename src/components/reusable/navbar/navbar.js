@@ -15,19 +15,27 @@ const Navbar = () => {
       <Menu.Item as={Link} to="/dashboard">
         Dashboard
       </Menu.Item>
-      {state.isLoggedIn && (
-        <Menu.Item position="right">
-          <Modal
-            trigger={<Button primary>Create a Ticket</Button>}
-            size="small"
-            centered={false}>
-            <Header icon="ticket" content="Create a new Ticket" />
-            <Modal.Content>
-              <TicketCreate />
-            </Modal.Content>
-          </Modal>
-        </Menu.Item>
-      )}
+
+      <Menu.Menu position="right">
+        {state.isLoggedIn && (
+          <Menu.Item as={Link} to="/profile">
+            Profile
+          </Menu.Item>
+        )}
+        {state.isLoggedIn && (
+          <Menu.Item position="right">
+            <Modal
+              trigger={<Button primary>Create a Ticket</Button>}
+              size="small"
+              centered={false}>
+              <Header icon="ticket" content="Create a new Ticket" />
+              <Modal.Content>
+                <TicketCreate />
+              </Modal.Content>
+            </Modal>
+          </Menu.Item>
+        )}
+      </Menu.Menu>
     </Menu>
   );
 };

@@ -39,6 +39,11 @@ export default function(state, action) {
           ...action.payload
         ]
       }
+    case 'SET_USER':
+      return {
+        ...state,
+        user: action.payload
+      }
     default:
       return state;
   }

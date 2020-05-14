@@ -14,9 +14,3 @@ Sinai is a ticket app that lets users create tickets and manage them efficiently
 2. run `npm install` to install dependecies
 3. run `npm start` to start local server
 4. Goto `localhost:3000` in your browser
-
-## todo
-[] comment api
-[] auth
-[] showing users based on role
-[] chart? 

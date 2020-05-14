@@ -20,10 +20,12 @@ const Dashboard = () => {
             </Segment>
           </Grid.Column>
           <Grid.Column width={6}>
-            <Segment>
-              <h4>Members</h4>
-              <UsersList />
-            </Segment>
+            {state.user.role === "admin" && (
+              <Segment>
+                <h4>Members</h4>
+                <UsersList />
+              </Segment>
+            )}
           </Grid.Column>
         </Grid>
       </StyledContainer>

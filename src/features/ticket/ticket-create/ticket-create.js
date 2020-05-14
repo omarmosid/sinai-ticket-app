@@ -8,15 +8,24 @@ import { useHistory } from "react-router-dom";
 
 const TicketCreate = () => {
   const { state, dispatch } = useContext(GlobalContext);
-  const history = useHistory()
+  const history = useHistory();
+  const userId = state.user._id;
   const [inputs, setInputs] = useState({
     title: "",
     description: "",
     status: "open",
-    category: "",
-    assignedTo: "",
+    category: "front-end",
+    assignedTo: "omar",
+    createdBy: "",
     comments: [],
   });
+
+  useEffect(() => {
+    setInputs({
+      ...inputs,
+      createdBy: userId
+    })
+  }, [])
 
   // Update on change
   const handleChange = (e) => {
@@ -34,6 +43,7 @@ const TicketCreate = () => {
     })
       .then(res => {
         console.log(res)
+        // Navigate to specific ticket page
         history.push(`/ticket/${res.data._id}`)
       })
       .catch(err => console.log(err))
@@ -70,6 +80,7 @@ const TicketCreate = () => {
           onChange={handleChange}>
           <option value="front-end">Front End</option>
           <option value="back-end">Back End</option>
+          <option value="dev-ops">Dev ops</option>
         </select>
       </Form.Field>
       <Form.Field>
@@ -79,7 +90,7 @@ const TicketCreate = () => {
           value={inputs.assignedTo}
           onChange={handleChange}>
           {
-            state.members.map((member) => <option key={member.id}>{member.name}</option>)
+            state.users.map((user) => <option key={user._id} value={user._id}>{user.name}</option>)
           }
         </select>
       </Form.Field>

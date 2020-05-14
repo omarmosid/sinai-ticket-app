@@ -13,8 +13,6 @@ import {
   Button,
   Label,
   Modal,
-  Dimmer,
-  Loader,
 } from "semantic-ui-react";
 import CustomLoader from "../../../components/reusable/custom-loader/custom-loader";
 
@@ -25,22 +23,25 @@ const TicketPage = (props) => {
 
   const [ticket, setTicket] = useState(null);
   const [comment, setComment] = useState("");
+  const [assignedTo, setAssignedTo] = useState('');
 
+  // Fetch ticket details
   useEffect(() => {
     axios
       .get(`https://sinai-ticket-app.herokuapp.com/api/tickets/${id}`)
-      .then((res) => setTicket(res.data))
+      .then((res) => {
+        setTicket(res.data)
+      })
       .catch((err) => console.log(err));
   }, []);
-
-  console.log(ticket);
 
   const closeTicket = () => {
     axios
       .put(`https://sinai-ticket-app.herokuapp.com/api/tickets/status/${id}`)
       .then((res) => {
         console.log(res);
-        window.location.reload();
+        history.push('/dashboard')
+        history.push(`/ticket/${ticket._id}`)
       })
       .catch((err) => console.log(err));
   };
@@ -72,7 +73,9 @@ const TicketPage = (props) => {
       )
       .then((res) => {
         console.log(res.data);
-        window.location.reload();
+        history.push('/dashboard')
+        history.push(`/ticket/${ticket._id}`)
+        // window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -119,7 +122,7 @@ const TicketPage = (props) => {
                           </Comment.Author>
                           <Comment.Metadata>
                             <div>
-                              Posted on {new Date(comment.date).toDateString()}
+                              Posted on {new Date(comment.date).toLocaleString()}
                             </div>
                           </Comment.Metadata>
                           <Comment.Text>{comment.content}</Comment.Text>
@@ -150,6 +153,10 @@ const TicketPage = (props) => {
                 <Label>{ticket.category}</Label>
               </Segment>
             </Segment.Group>
+            <Segment>
+              <h4>Assigned to: {ticket.assignedTo}</h4>
+
+            </Segment>
             <Button
               primary
               fluid

@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Layout from "../../components/reusable/layout/layout";
 import { Segment, Form, Input, Button, Header } from "semantic-ui-react";
 import styled from "styled-components";
 import { GlobalContext } from "../../context/globalContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -20,16 +20,37 @@ const StyledWrapper = styled.div`
 `;
 
 const Login = () => {
-  const [userName, setUserName] = useState("");
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { dispatch } = useContext(GlobalContext);
+  const { state, dispatch } = useContext(GlobalContext);
   const history = useHistory();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("signedin");
-    dispatch({ type: "LOGIN" });
-    history.push("/dashboard");
+    // Ideally I would want hit an async request to an auth endpoint. Mocking auth for now.
+    if(username === 'omar' && password === 'omar') {
+      const user = state.users.find(user => user.username === 'omar')
+      localStorage.setItem("user", JSON.stringify(user))
+      dispatch({ type: "LOGIN" });
+      window.location.reload()
+    }
+    if(username === 'doe' && password === 'doe') {
+      const user = state.users.find(user => user.username === 'doe')
+      localStorage.setItem("user", JSON.stringify(user))
+      dispatch({ type: "LOGIN" });
+      window.location.reload()
+    }
   };
+
+  // If user is loggedin
+  if(state.isLoggedIn) {
+    return (
+      <Redirect to="/dashboard" />
+    )
+  }
+
+
   return (
     <Layout>
       <StyledWrapper>
@@ -42,7 +63,7 @@ const Login = () => {
                 required
                 type="text"
                 placeholder="JohnDoe998"
-                value={userName}
+                value={username}
                 onChange={(e) => setUserName(e.target.value)}
               />
             </Form.Field>

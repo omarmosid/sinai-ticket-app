@@ -8,6 +8,18 @@ export const GlobalContext = React.createContext(null);
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(rootReducer, initialState);
 
+  useEffect(() => {
+    if(localStorage.getItem("user")) {
+      dispatch({
+        type: "LOGIN"
+      })
+      dispatch({
+        type: 'SET_USER',
+        payload: JSON.parse(localStorage.getItem("user"))
+      })
+    }
+  }, [])
+
   // Fetch Tickets
   useEffect(() => {
     axios.get('https://sinai-ticket-app.herokuapp.com/api/tickets')
