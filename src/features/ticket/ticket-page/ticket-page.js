@@ -19,6 +19,7 @@ const TicketPage = (props) => {
   const { state, dispatch } = useContext(GlobalContext);
 
   const [ticket, setTicket] = useState(null);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     axios
@@ -33,6 +34,20 @@ const TicketPage = (props) => {
     console.log(id);
     dispatch({ type: "CLOSE_TICKET", payload: { id: id } });
   };
+
+  const addComment = (e) => {
+    axios.put(`http://localhost:4000/api/tickets/comments/${id}`, {
+      content: comment,
+      author: 'Omar'
+    })
+      .then(res => {
+        console.log(res.data);
+        window.location.reload();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   if (ticket === null) {
     return <div>Loading...</div>;
@@ -65,14 +80,17 @@ const TicketPage = (props) => {
                       <Comment key={comment.id}>
                         <Comment.Avatar src="https://api.adorable.io/avatars/50/abott@adorable.png" />
                         <Comment.Content>
-                          <Comment.Author>{comment.author}</Comment.Author>
+                          <Comment.Author as="a">{comment.author}</Comment.Author>
+                          <Comment.Metadata>
+                            <div>Posted on {new Date(comment.date).toDateString()}</div>
+                          </Comment.Metadata>
                           <Comment.Text>{comment.content}</Comment.Text>
                         </Comment.Content>
                       </Comment>
                     );
                   })}
-                <Form reply>
-                  <Form.TextArea />
+                <Form reply onSubmit={addComment}>
+                  <Form.TextArea value={comment} onChange={(e) => setComment(e.target.value)}/>
                   <Button>Add Reply</Button>
                 </Form>
               </Comment.Group>
