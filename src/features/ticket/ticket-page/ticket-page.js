@@ -3,6 +3,7 @@ import axios from "axios";
 import { GlobalContext } from "../../../context/globalContext";
 import { useParams, useHistory } from "react-router-dom";
 import Layout from "../../../components/reusable/layout/layout";
+import styled from "styled-components";
 import {
   Segment,
   Grid,
@@ -15,7 +16,7 @@ import {
   Dimmer,
   Loader,
 } from "semantic-ui-react";
-import styled from "styled-components";
+import CustomLoader from "../../../components/reusable/custom-loader/custom-loader";
 
 const TicketPage = (props) => {
   const { id } = useParams();
@@ -48,10 +49,11 @@ const TicketPage = (props) => {
     axios
       .delete(`https://sinai-ticket-app.herokuapp.com/api/tickets/${id}`)
       .then((res) => {
-        console.log(res);
+        // Getting fresh tickets array after deleting a ticket
         axios.get('https://sinai-ticket-app.herokuapp.com/api/tickets/')
           .then(res => {
             dispatch({type: 'GET_TICKETS', payload: res.data})
+            // Navigating to dashboard and showing updated tickets with deletedTicket removed from view
             history.push('/dashboard')
           })
           .catch((err) => console.log(err))
@@ -80,9 +82,7 @@ const TicketPage = (props) => {
   if (ticket === null) {
     return (
       <Layout>
-        <Dimmer active>
-          <Loader />
-        </Dimmer>
+        <CustomLoader />
       </Layout>
     );
   }
@@ -157,7 +157,7 @@ const TicketPage = (props) => {
               className="cta"
               disabled={ticket.status === "closed"}
               onClick={closeTicket}>
-              Resolve Ticket
+              {ticket.status === 'closed' ? 'Closed' : 'Resolve Ticket'}
             </Button>
             <Modal
               size="tiny"
