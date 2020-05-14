@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { GlobalContext } from "../../../context/globalContext";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import Layout from "../../../components/reusable/layout/layout";
 import {
   Segment,
@@ -11,15 +11,19 @@ import {
   Form,
   Button,
   Label,
+  Modal,
+  Dimmer,
+  Loader,
 } from "semantic-ui-react";
 import styled from "styled-components";
 
 const TicketPage = (props) => {
   const { id } = useParams();
+  const history = useHistory();
   const { state, dispatch } = useContext(GlobalContext);
 
   const [ticket, setTicket] = useState(null);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     axios
@@ -30,27 +34,57 @@ const TicketPage = (props) => {
 
   console.log(ticket);
 
-  const closeTicket = (id) => {
-    console.log(id);
-    dispatch({ type: "CLOSE_TICKET", payload: { id: id } });
+  const closeTicket = () => {
+    axios
+      .put(`https://sinai-ticket-app.herokuapp.com/api/tickets/status/${id}`)
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const deleteTicket = () => {
+    axios
+      .delete(`https://sinai-ticket-app.herokuapp.com/api/tickets/${id}`)
+      .then((res) => {
+        console.log(res);
+        axios.get('https://sinai-ticket-app.herokuapp.com/api/tickets/')
+          .then(res => {
+            dispatch({type: 'GET_TICKETS', payload: res.data})
+            history.push('/dashboard')
+          })
+          .catch((err) => console.log(err))
+      })
+      .catch((err) => console.log(err));
   };
 
   const addComment = (e) => {
-    axios.put(`http://localhost:4000/api/tickets/comments/${id}`, {
-      content: comment,
-      author: 'Omar'
-    })
-      .then(res => {
+    axios
+      .put(
+        `https://sinai-ticket-app.herokuapp.com/api/tickets/comments/${id}`,
+        {
+          content: comment,
+          author: "Omar",
+        }
+      )
+      .then((res) => {
         console.log(res.data);
         window.location.reload();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
-      })
-  }
+      });
+  };
 
   if (ticket === null) {
-    return <div>Loading...</div>;
+    return (
+      <Layout>
+        <Dimmer active>
+          <Loader />
+        </Dimmer>
+      </Layout>
+    );
   }
 
   return (
@@ -64,7 +98,7 @@ const TicketPage = (props) => {
                 as="a"
                 color={ticket.status === "open" ? "green" : "red"}
                 ribbon>
-                {ticket.status}
+                {ticket.status.toUpperCase()}
               </Label>
               <h1>{ticket.title}</h1>
               <p>{ticket.description}</p>
@@ -77,12 +111,16 @@ const TicketPage = (props) => {
                 {ticket.comments.length !== 0 &&
                   ticket.comments.map((comment) => {
                     return (
-                      <Comment key={comment.id}>
+                      <Comment key={comment._id}>
                         <Comment.Avatar src="https://api.adorable.io/avatars/50/abott@adorable.png" />
                         <Comment.Content>
-                          <Comment.Author as="a">{comment.author}</Comment.Author>
+                          <Comment.Author as="a">
+                            {comment.author}
+                          </Comment.Author>
                           <Comment.Metadata>
-                            <div>Posted on {new Date(comment.date).toDateString()}</div>
+                            <div>
+                              Posted on {new Date(comment.date).toDateString()}
+                            </div>
                           </Comment.Metadata>
                           <Comment.Text>{comment.content}</Comment.Text>
                         </Comment.Content>
@@ -90,7 +128,10 @@ const TicketPage = (props) => {
                     );
                   })}
                 <Form reply onSubmit={addComment}>
-                  <Form.TextArea value={comment} onChange={(e) => setComment(e.target.value)}/>
+                  <Form.TextArea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
                   <Button>Add Reply</Button>
                 </Form>
               </Comment.Group>
@@ -114,9 +155,27 @@ const TicketPage = (props) => {
               fluid
               size="large"
               className="cta"
-              onClick={(id) => closeTicket(ticket.id)}>
+              disabled={ticket.status === "closed"}
+              onClick={closeTicket}>
               Resolve Ticket
             </Button>
+            <Modal
+              size="tiny"
+              trigger={
+                <Button negative fluid basic size="large" className="delete">
+                  Delete this ticket
+                </Button>
+              }>
+              <Modal.Header>Delete this ticket?</Modal.Header>
+              <Modal.Content>
+                <p>Are you sure you want to delete this ticket?</p>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button negative onClick={deleteTicket}>
+                  Yes, Delete this ticket
+                </Button>
+              </Modal.Actions>
+            </Modal>
           </Grid.Column>
         </Grid>
       </StyledContainer>
