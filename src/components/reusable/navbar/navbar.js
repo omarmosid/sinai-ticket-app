@@ -15,6 +15,9 @@ const Navbar = () => {
       <Menu.Item as={Link} to="/dashboard">
         Dashboard
       </Menu.Item>
+      <Menu.Item as={Link} to="/users">
+        Members
+      </Menu.Item>
 
       <Menu.Menu position="right">
         {state.isLoggedIn && (

@@ -1,7 +1,11 @@
 export default function(state, action) {
   switch(action.type) {
-    case 'LOGIN':
+    case 'LOAD_USER':
       return {...state, isLoggedIn: true}
+    case 'LOGIN_SUCCESS':
+      return {...state, isLoggedIn: true}
+    case 'LOGIN_FAIL':
+        return {...state, isLoggedIn: false}
     case 'LOGOUT':
       return {...state, isLoggedIn: false}
     case 'GET_TICKETS':

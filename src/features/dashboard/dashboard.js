@@ -19,14 +19,14 @@ const Dashboard = () => {
               <TicketList />
             </Segment>
           </Grid.Column>
-          <Grid.Column width={6}>
+          {/* <Grid.Column width={6}>
             {state.user.role === "admin" && (
               <Segment>
                 <h4>Members</h4>
                 <UsersList />
               </Segment>
             )}
-          </Grid.Column>
+          </Grid.Column> */}
         </Grid>
       </StyledContainer>
     </Layout>

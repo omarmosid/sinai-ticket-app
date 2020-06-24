@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Login from '../features/login/login'
 import Dashboard from '../features/dashboard/dashboard'
@@ -6,9 +6,18 @@ import Home from '../features/home/home'
 import TicketPage from '../features/ticket/ticket-page/ticket-page'
 import PrivateRoute from './private/private'
 import ProfilePage from '../features/profile/profile-page/profile-page'
-
+import UsersPage from '../features/users/users-page/users-page'
+import { GlobalContext } from '../context/globalContext'
 
 const AppRouter = () => {
+  const { state, dispatch } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if(localStorage.getItem("token")) {
+      dispatch({ type: 'LOAD_USER' });
+    }
+  }, [])
+
   return (
     <Switch>
       <Route path="/" exact>
@@ -22,6 +31,9 @@ const AppRouter = () => {
       </PrivateRoute>
       <PrivateRoute path="/dashboard" exact>
         <Dashboard />
+      </PrivateRoute>
+      <PrivateRoute path="/users" exact>
+        <UsersPage />
       </PrivateRoute>
       <PrivateRoute path="/profile" exact>
         <ProfilePage />
