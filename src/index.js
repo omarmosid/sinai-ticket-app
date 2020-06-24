@@ -7,10 +7,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AppRouter from "./router/AppRouter";
 import { GlobalProvider } from "./context/globalContext";
 
-import axios from "axios";
+import {axiosPowerup} from "./utils/api/axiosPowerup";
 
-axios.defaults.baseURL = "http://localhost:4000"
+// axios.defaults.baseURL = "http://localhost:4000"
 // axios.defaults.baseURL = "https://sinai-ticket-app.herokuapp.com"
+
+axiosPowerup();
 
 ReactDOM.render(
   <React.StrictMode>

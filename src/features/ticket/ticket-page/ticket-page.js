@@ -25,10 +25,16 @@ const TicketPage = (props) => {
   const [comment, setComment] = useState("");
   const [assignedTo, setAssignedTo] = useState('');
 
+  console.log(ticket)
+
   // Fetch ticket details
   useEffect(() => {
     axios
-      .get(`/api/tickets/${id}`)
+      .get(`/api/tickets/${id}`, {
+        headers: {
+          "x-auth-token": JSON.parse(localStorage.getItem("token")),
+        },
+      })
       .then((res) => {
         setTicket(res.data)
       })
@@ -146,7 +152,7 @@ const TicketPage = (props) => {
             <Segment.Group raised>
               <Segment>
                 <span>
-                  Created on {new Date(ticket.createdAt).toLocaleString()}
+                  Created on {new Date(ticket.createdAt).toLocaleString()} by {ticket.createdBy}
                 </span>
               </Segment>
               <Segment>

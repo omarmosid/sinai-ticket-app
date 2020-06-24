@@ -21,11 +21,21 @@ const TicketCreate = () => {
   });
 
   useEffect(() => {
-    setInputs({
-      ...inputs,
-      createdBy: userId
-    })
-  }, [])
+    axios
+      .get("/api/users/me", {
+        headers: {
+          "x-auth-token": JSON.parse(localStorage.getItem("token")),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setInputs({
+          ...inputs,
+          createdBy: res.data.username,
+        });
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   // Update on change
   const handleChange = (e) => {
@@ -38,18 +48,26 @@ const TicketCreate = () => {
   // Handle Submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/tickets/', {
-      ...inputs,
-    })
-      .then(res => {
-        console.log(res)
+    console.log(inputs)
+    axios
+      .post(
+        "/api/tickets/",
+        { ...inputs },
+        {
+          headers: {
+            "x-auth-token": JSON.parse(localStorage.getItem("token")),
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
         // Navigate to specific ticket page
-        history.push(`/ticket/${res.data._id}`)
+        history.push('/dashboard');
+        history.push(`/ticket/${res.data._id}`);
       })
-      .catch(err => console.log(err))
+      .catch((err) => console.log(err));
   };
 
-  console.log(inputs);
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Field>
@@ -74,10 +92,7 @@ const TicketCreate = () => {
       </Form.Field>
       <Form.Field>
         <label>Category</label>
-        <select
-          name="category"
-          value={inputs.category}
-          onChange={handleChange}>
+        <select name="category" value={inputs.category} onChange={handleChange}>
           <option value="front-end">Front End</option>
           <option value="back-end">Back End</option>
           <option value="dev-ops">Dev ops</option>
@@ -89,9 +104,11 @@ const TicketCreate = () => {
           name="assignedTo"
           value={inputs.assignedTo}
           onChange={handleChange}>
-          {
-            state.users.map((user) => <option key={user._id} value={user._id}>{user.name}</option>)
-          }
+          {state.users.map((user) => (
+            <option key={user._id} value={user._id}>
+              {user.name}
+            </option>
+          ))}
         </select>
       </Form.Field>
       <Button secondary type="submit">
