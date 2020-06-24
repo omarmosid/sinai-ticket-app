@@ -25,10 +25,16 @@ const TicketPage = (props) => {
   const [comment, setComment] = useState("");
   const [assignedTo, setAssignedTo] = useState('');
 
+  console.log(ticket)
+
   // Fetch ticket details
   useEffect(() => {
     axios
-      .get(`https://sinai-ticket-app.herokuapp.com/api/tickets/${id}`)
+      .get(`/api/tickets/${id}`, {
+        headers: {
+          "x-auth-token": JSON.parse(localStorage.getItem("token")),
+        },
+      })
       .then((res) => {
         setTicket(res.data)
       })
@@ -37,7 +43,7 @@ const TicketPage = (props) => {
 
   const closeTicket = () => {
     axios
-      .put(`https://sinai-ticket-app.herokuapp.com/api/tickets/status/${id}`)
+      .put(`/api/tickets/status/${id}`)
       .then((res) => {
         console.log(res);
         history.push('/dashboard')
@@ -48,10 +54,10 @@ const TicketPage = (props) => {
 
   const deleteTicket = () => {
     axios
-      .delete(`https://sinai-ticket-app.herokuapp.com/api/tickets/${id}`)
+      .delete(`/api/tickets/${id}`)
       .then((res) => {
         // Getting fresh tickets array after deleting a ticket
-        axios.get('https://sinai-ticket-app.herokuapp.com/api/tickets/')
+        axios.get('/api/tickets/')
           .then(res => {
             dispatch({type: 'GET_TICKETS', payload: res.data})
             // Navigating to dashboard and showing updated tickets with deletedTicket removed from view
@@ -65,7 +71,7 @@ const TicketPage = (props) => {
   const addComment = (e) => {
     axios
       .put(
-        `https://sinai-ticket-app.herokuapp.com/api/tickets/comments/${id}`,
+        `/api/tickets/comments/${id}`,
         {
           content: comment,
           author: "Omar",
@@ -146,7 +152,7 @@ const TicketPage = (props) => {
             <Segment.Group raised>
               <Segment>
                 <span>
-                  Created on {new Date(ticket.createdAt).toLocaleString()}
+                  Created on {new Date(ticket.createdAt).toLocaleString()} by {ticket.createdBy}
                 </span>
               </Segment>
               <Segment>

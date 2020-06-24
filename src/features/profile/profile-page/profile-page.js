@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const { state } = useContext(GlobalContext);
 
   useEffect(() => {
-    axios.get(`https://sinai-ticket-app.herokuapp.com/api/auth`, {
+    axios.get(`/api/auth`, {
       headers: {
         "x-auth-token": JSON.parse(localStorage.getItem("token")),
       },

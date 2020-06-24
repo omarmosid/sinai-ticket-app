@@ -22,7 +22,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Fetch Tickets
   useEffect(() => {
-    axios.get('https://sinai-ticket-app.herokuapp.com/api/tickets')
+    axios.get('/api/tickets')
       .then(res => {
         dispatch({
           type: 'GET_TICKETS',
@@ -34,7 +34,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Fetch Users
   useEffect(() => {
-    axios.get('https://sinai-ticket-app.herokuapp.com/api/users')
+    axios.get('/api/users')
       .then(res => {
         dispatch({
           type: 'GET_USERS',
