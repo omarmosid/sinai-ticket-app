@@ -38,7 +38,7 @@ const TicketCreate = () => {
   // Handle Submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('https://sinai-ticket-app.herokuapp.com/api/tickets/', {
+    axios.post('/api/tickets/', {
       ...inputs,
     })
       .then(res => {

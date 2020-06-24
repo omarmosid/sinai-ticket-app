@@ -52,8 +52,7 @@ const Login = () => {
     //   window.location.reload()
     // }
     axios
-      // "https://sinai-ticket-app.herokuapp.com/api/auth"
-      .post("http://localhost:4000/api/auth", { email, password })
+      .post("/api/auth", { email, password })
       .then((res) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
