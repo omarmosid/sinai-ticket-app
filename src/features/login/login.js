@@ -1,6 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import Layout from "../../components/reusable/layout/layout";
-import { Segment, Form, Input, Button, Header } from "semantic-ui-react";
+import {
+  Segment,
+  Form,
+  Input,
+  Button,
+  Header,
+  Message,
+} from "semantic-ui-react";
 import styled from "styled-components";
 import { GlobalContext } from "../../context/globalContext";
 import { useHistory, Redirect } from "react-router-dom";
@@ -24,6 +31,7 @@ const Login = () => {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
   const { state, dispatch } = useContext(GlobalContext);
   const history = useHistory();
 
@@ -44,7 +52,8 @@ const Login = () => {
     //   window.location.reload()
     // }
     axios
-      .post("https://sinai-ticket-app.herokuapp.com/api/auth", { email, password })
+      // "https://sinai-ticket-app.herokuapp.com/api/auth"
+      .post("http://localhost:4000/api/auth", { email, password })
       .then((res) => {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
@@ -52,6 +61,7 @@ const Login = () => {
       .catch((err) => {
         localStorage.removeItem("token");
         dispatch({ type: "LOGIN_FAIL" });
+        setErrors(err.response.data.errors);
       });
   };
 
@@ -65,7 +75,7 @@ const Login = () => {
       <StyledWrapper>
         <Header as="h1">Ticket App</Header>
         <Segment className="form__segment">
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} error={errors.length !== 0}>
             <Form.Field>
               <label>Username</label>
               <Input
@@ -89,6 +99,9 @@ const Login = () => {
             <Button primary fluid>
               Submit
             </Button>
+            {errors.map((error, index) => {
+              return <Message error header={error.msg} />;
+            })}
           </Form>
         </Segment>
       </StyledWrapper>
