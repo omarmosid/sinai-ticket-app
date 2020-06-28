@@ -8,4 +8,8 @@ export function axiosPowerup() {
   else {
     axios.defaults.baseURL = "https://sinai-ticket-app.herokuapp.com";
   }
+
+  axios.defaults.headers = {
+    "x-auth-token": JSON.parse(localStorage.getItem("token")),
+  }
 }

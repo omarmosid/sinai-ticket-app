@@ -8,6 +8,7 @@ import PrivateRoute from './private/private'
 import ProfilePage from '../features/profile/profile-page/profile-page'
 import UsersPage from '../features/users/users-page/users-page'
 import { GlobalContext } from '../context/globalContext'
+import ProfileEdit from '../features/profile/profile-edit/profile-edit'
 
 const AppRouter = () => {
   const { state, dispatch } = useContext(GlobalContext);
@@ -37,6 +38,9 @@ const AppRouter = () => {
       </PrivateRoute>
       <PrivateRoute path="/profile" exact>
         <ProfilePage />
+      </PrivateRoute>
+      <PrivateRoute path="/profile/edit" exact>
+        <ProfileEdit />
       </PrivateRoute>
       <Route path="/" >
         <h1>404</h1>

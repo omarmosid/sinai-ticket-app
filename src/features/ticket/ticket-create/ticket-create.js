@@ -9,7 +9,6 @@ import { useHistory } from "react-router-dom";
 const TicketCreate = () => {
   const { state, dispatch } = useContext(GlobalContext);
   const history = useHistory();
-  const userId = state.user._id;
   const [inputs, setInputs] = useState({
     title: "",
     description: "",
